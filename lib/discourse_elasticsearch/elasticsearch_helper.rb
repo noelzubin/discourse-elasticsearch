@@ -58,7 +58,7 @@ module DiscourseElasticsearch
       return false if post.blank? || post.post_type != Post.types[:regular] || !guardian.can_see?(post)
       topic = post.topic
       return false if topic.blank? || topic.archetype == Archetype.private_message
-      return true
+      true
     end
 
     def self.to_post_records(post)
@@ -197,8 +197,11 @@ module DiscourseElasticsearch
     def self.elasticsearch_index
       server_ip = SiteSetting.elasticsearch_server_ip
       server_port = SiteSetting.elasticsearch_server_port
-      client = Elasticsearch::Client.new url: "#{server_ip}:#{server_port}", log: true
-      return client
+      client = Elasticsearch::Client.new(
+        url: "#{server_ip}:#{server_port}", log: true,
+        api_key: SiteSetting.elasticsearch_discourse_apiKey
+      )
+      client
     end
 
     def self.clean_indices(index_name)
@@ -216,9 +219,9 @@ module DiscourseElasticsearch
                             body: {
                               mappings: {
                                 properties: {
-                                  name: { type: 'text', analyzer: 'ik_max_word', search_analyzer: "ik_smart" },
-                                  url: { type: 'text', analyzer: 'ik_max_word', search_analyzer: "ik_smart" },
-                                  username: { type: 'text', analyzer: 'ik_max_word', search_analyzer: "ik_smart" }
+                                  name: { type: 'text', analyzer: 'standard', search_analyzer: "standard" },
+                                  url: { type: 'text', analyzer: 'standard', search_analyzer: "standard" },
+                                  username: { type: 'text', analyzer: 'standard', search_analyzer: "standard" }
                                   }
                               }
                             }
@@ -229,10 +232,10 @@ module DiscourseElasticsearch
                                 properties: {
                                   topic: {
                                     properties: {
-                                      title: { type: 'text', analyzer: 'ik_max_word', search_analyzer: "ik_smart" }
+                                      title: { type: 'text', analyzer: 'standard', search_analyzer: "standard" }
                                     }
                                   },
-                                  content: { type: 'text', analyzer: 'ik_max_word', search_analyzer: "ik_smart" }
+                                  content: { type: 'text', analyzer: 'standard', search_analyzer: "standard" }
                                 }
                               }
                             }
@@ -241,8 +244,8 @@ module DiscourseElasticsearch
                             body: {
                               mappings: {
                                 properties: {
-                                  name: { type: 'text', analyzer: 'ik_max_word', search_analyzer: "ik_smart" },
-                                  url: { type: 'text', analyzer: 'ik_max_word', search_analyzer: "ik_smart" }
+                                  name: { type: 'text', analyzer: 'standard', search_analyzer: "standard" },
+                                  url: { type: 'text', analyzer: 'standard', search_analyzer: "standard" }
                                 }
                               }
                             }
