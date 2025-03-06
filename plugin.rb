@@ -9,6 +9,7 @@ gem 'httpclient', '2.8.3'
 gem 'elasticsearch-transport', '7.17.1'
 gem 'elasticsearch-api', '7.17.1'
 gem 'elasticsearch', '7.17.1'
+gem 'faraday', '~> 2.0'
 
 register_asset 'stylesheets/variables.scss'
 register_asset 'stylesheets/elasticsearch-base.scss'
